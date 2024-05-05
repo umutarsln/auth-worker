@@ -2,14 +2,14 @@
 export default {
 	async fetch(request) {
 	  const headers = {
-		'Access-Control-Allow-Origin': 'http://localhost:5173', // Adjust as necessary
+		'Access-Control-Allow-Origin': '*',
 		'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
 		'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-		'Access-Control-Max-Age': '86400', // Cache preflight response for 24 hours
+		'Access-Control-Max-Age': '86400',
 		'Content-Type': 'application/json'
 	  };
   
-	  // Handle CORS preflight request
+	  // Handle CORS preflight requests
 	  if (request.method === 'OPTIONS') {
 		return new Response(null, {
 		  status: 204,
@@ -17,35 +17,43 @@ export default {
 		});
 	  }
   
-	  // Ensure request method is POST for authentication
-	  if (request.method === 'POST') {
-		// Parse the request body
-		const { email, password } = await request.json();
+	  // Log the Authorization header
+	  const authHeader = request.headers.get('Authorization');
+	  console.log('Authorization Header:', authHeader);
   
-		// Example hardcoded credentials validation
-		const validEmail = 'admin@admin.com';
-		const validPassword = 'password123';
-  
-		// Validate credentials
-		if (email === validEmail && password === validPassword) {
-		  return new Response(JSON.stringify({ authenticated: true }), {
-			status: 200,
-			headers
-		  });
-		} else {
-		  return new Response(JSON.stringify({ error: 'Invalid credentials' }), {
-			status: 401,
-			headers
-		  });
-		}
+	  // Mock validation of Authorization token
+	  const validAuthToken = 'my-secret-token';
+	  if (authHeader !== `Bearer ${validAuthToken}`) {
+		console.log('Invalid authorization token');
+		return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+		  status: 401,
+		  headers
+		});
 	  }
   
-	  // For unsupported methods
-	  return new Response(JSON.stringify({ error: 'Unsupported request method' }), {
-		status: 405,
-		headers
-	  });
+	  // Extract and log email/password from the request body
+	  const { email, password } = await request.json();
+	  console.log('Received Email:', email);
+	  console.log('Received Password:', password);
+  
+	  // Mock validation for demonstration purposes
+	  const validEmail = 'admin@admin.com';
+	  const validPassword = 'password123';
+  
+	  // Check if credentials match
+	  if (email === validEmail && password === validPassword) {
+		console.log('Authentication successful');
+		return new Response(JSON.stringify({ authenticated: true }), {
+		  status: 200,
+		  headers
+		});
+	  } else {
+		console.log('Invalid credentials');
+		return new Response(JSON.stringify({ error: 'Invalid credentials' }), {
+		  status: 401,
+		  headers
+		});
+	  }
 	}
   }
-  
   
