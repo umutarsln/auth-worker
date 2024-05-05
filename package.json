@@ -1,0 +1,14 @@
+{
+  "name": "auth-worker",
+  "version": "0.0.0",
+  "devDependencies": {
+    "vitest": "^1.6.0",
+    "wrangler": "3.53.1"
+  },
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest"
+  }
+}
